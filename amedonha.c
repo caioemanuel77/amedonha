@@ -29,18 +29,29 @@ int main (int narg, char * argv[]) {
     for (int i=0; i<5; i++) {   // Início do jogo
         
         // Sorteio da letra
-        int indice = sorteio_letra();
+        int indice1 = sorteioLetra();
 
         /* K será utilizado como parâmetro para saber se uma letra já foi sorteada.
         O vetor de letras recebe K exatamente na posição da letra que for sorteada, 
         o que indica que ela não pode mais ser escolhida.*/
          
-        while ( strcmp(letras[indice],"K") == 0 ) 
-            indice = sorteio_letra();   // Realiza novo sorteio de letra
-        printf("A letra desta rodada é %c",letras[indice]);
-        letras[indice] = "K";   // Anula a possibilidade da letra escolhida sair de novo.
+        while ( strcmp(letras[indice1],"K") == 0 ) 
+            indice1 = sorteioLetra();   // Realiza novo sorteio de letra
+        printf("A letra desta rodada é %c",letras[indice1]);
+        letras[indice1] = "K";   // Anula a possibilidade da letra escolhida sair de novo.
 
-        // Sorteio do primeiro tema
+        // Sorteio do tema
+        int indice2 = sorteioTemas();
+
+        /* A estratégia agora é usar o X para indicar que o tema já saiu */
+
+        while ( strcmp(temas[indice2],"X") == 0 ) 
+            indice2 = sorteioTemas();  // Realiza novo sorteio de letra
+        printf("A letra desta rodada é %c",letras[indice1]);
+        letras[indice1] = "K";   // Anula a possibilidade da letra escolhida sair de novo.
+
+
+        
 
 
     }
