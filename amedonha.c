@@ -69,13 +69,12 @@ int main (int narg, char * argv[]) {
 
         // Iniciando o jogo
 
-            char c;
-            getchar();
-            printf("Tecle [Enter] para iniciar a rodada: ");
-            scanf(" %c",&c); // Limpa o buffer do teclado
-            while (c != '\n') {
-                printf("Tecle [Enter] para iniciar a rodada: ");
-                scanf("%c",&c);
-            }
+            printf("\nTecle [Enter] para iniciar a rodada: ");
+            
+            // 2. Garante que a mensagem apareça imediatamente (resolve o bug do buffer)
+            fflush(stdout);
+
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
     }
 }
