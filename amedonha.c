@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
 #include "estrutura.h"
 
 int main (int narg, char * argv[]) {
     int N;
     jogador * lista_jogadores;
     inicializar (&lista_jogadores);
+    struct timeval inicio,fim;
+    double tempo_seg = 1.0;
 
     printf("*** JOGO AMEDONHA ***\n\n");
     printf("Quantos jogadores? ");
@@ -69,7 +72,7 @@ int main (int narg, char * argv[]) {
             printf("\nOrdem de Jogadores:\n");
             imprimirJogadores (ordem,1);
 
-        // Iniciando o jogo
+        // Iniciando o jogo (coletando a tecla Enter)
 
             printf("\nTecle [Enter] para iniciar a rodada: ");
             fflush(stdout);
@@ -81,21 +84,61 @@ int main (int narg, char * argv[]) {
 
             getchar();
 
-            jogador* atual = ordem;
+        // Coletando as respostas dos jogadores em cada rodada
 
-            while(atual != NULL){
+            jogador* atual = ordem; // Ponteiro para a cabeça da lista que mostra a ordem dos jogadores
+            int cont = 0;
+
+            while (atual != NULL && cont < N) {
+
                 system("clear");
                 printf("*** JOGO AMEDONHA ***\n\n");
                 printf("-> A letra desta rodada é %s\n", letra);
                 printf("-> A categoria desta rodada é %s\n", tema);
                 printf("_________________________________________\n");
                 char resposta[30];
-                printf("\nJogador %s, qual a sua resposta? ",atual->nome);
-                scanf(" %[^\n]",resposta);
+                int tempo_jogador = (8 + 2*N - 2*cont);
+                
+                //  Coletando o tempo que a resposta custou
 
-                strcpy(atual->respostas[i],resposta); // Armazena a resposta na estrutura do jogador
+                gettimeofday(&inicio,NULL);
 
-                atual = atual->prox;
-            }
+                    printf("\n%s, você deve entrar um %s com a letra %s em %d segundos: ",atual->nome,tema,letra,tempo_jogador);
+                    scanf(" %[^\n]",resposta);
+                    
+                    //  Tratamento de respostas: resposta maior que 30 caracteres ou letra inicial diferente da sorteada
+                    while (strlen(resposta) > 30 || strcmp(resposta[0],letra) == 1) {
+                        printf("Resposta inválida! Tente novamente\n");
+                        printf("\nJogador %s, qual a sua resposta? ",atual->nome);
+                        scanf(" %[^\n]",resposta);
+                    }
+
+                gettimeofday (&fim,NULL);
+
+                tempo_seg = (double) (fim.tv_usec - inicio.tv_usec) / 1000000 + (double) (fim.tv_sec - inicio.tv_sec);
+
+                if (tempo_seg <= tempo_jogador) {
+                    if ( strcmp(tema,"Nomes de Pessoas") == 0 ) { // Tratamento do caso "Nome de Pessoa" e nome simples
+                        char resp[30];
+
+                        int i = 0;
+                        while (resposta[i] != ' ') { // Caso seja nome de pessoa, só pode ler até o primeiro espaço em branco
+                            resp[i] = resposta[i];
+                            i++;
+                        }
+                        resp[i] = '\0';
+                        strcpy(atual->respostas[i],resp);
+                        
+                    } 
+                    else 
+                        strcpy(atual->respostas[i],resposta);
+                } else 
+                    *atual->respostas[i] = "erro";
+
+                atual = atual->prox; 
+                cont++;
+            }   // Fim de rodada
+
+            atual = ordem;
     }
 }
