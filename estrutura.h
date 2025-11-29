@@ -2,7 +2,7 @@ typedef struct node{
     int id;
     char* nome;
     char respostas[5][30];
-    int pontos;
+    int pontos[5];
     struct node *prox;
 } jogador;
 
