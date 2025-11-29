@@ -25,7 +25,10 @@ jogador* criarNode(int id, char* nome){
         novo->nome = (char*) malloc( (strlen(nome)+1) * sizeof(char) );
         strcpy(novo->nome, nome);
 
-        novo->pontos = 0;
+        for(int i = 0; i < 5; i++) {
+            novo->respostas[i][0] = '\0'; // Inicializa as respostas como strings vazias
+            novo->pontos[i] = 0; // Inicializa os pontos como zero
+        }
 
         novo->prox = NULL;
     }
@@ -54,7 +57,9 @@ jogador* copyNode(jogador* original) {
     if (novo == NULL) return NULL;
 
     novo->id = original->id;
-    novo->pontos = original->pontos;
+    for (int i = 0; i < 5; i++) {
+        novo->pontos[i] = original->pontos[i];
+    }
 
     // Faz um novo alocamento para o nome
     if (original->nome != NULL) {
