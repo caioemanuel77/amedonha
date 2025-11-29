@@ -69,7 +69,7 @@ jogador* copyNode(jogador* original) {
         if (original->respostas[i] != NULL) {
             strcpy(novo->respostas[i], original->respostas[i]);
         } else
-            novo->respostas[i][0] = '\0';
+            novo->respostas[i][0] = '\0'; 
     }
 
     novo->prox = NULL;
@@ -149,4 +149,28 @@ void imprimirJogadores(jogador* no, int a){
         return;
     printf("  %d. %s\n", a, no->nome);
     imprimirJogadores(no->prox, a+1);
+}
+
+// Verifica respostas iguais entre os jogadores e retorna um vetor com os indices representando a quantidade de respostas iguais para cada jogador na rodada.
+int* respostasIguais(jogador* jogadores, int tamanho, int rodada) {
+
+    int *respostas = calloc(tamanho, sizeof(int));
+    jogador *p1, *p2;
+
+    // Para cada jogador
+    for (p1 = jogadores; p1 != NULL; p1 = p1->prox) {
+
+        // Se a resposta dele não é "erro"
+        if (strcmp(p1->respostas[rodada], "erro") != 0) {
+
+            // Compara com os outros jogadores
+            for (p2 = jogadores; p2 != NULL; p2 = p2->prox) {
+
+                if (strcmp(p1->respostas[rodada], p2->respostas[rodada]) == 0)
+                    respostas[p1->id]++;   // Id é a posição do jogador
+            }
+        }
+    }
+
+    return respostas; 
 }
