@@ -67,11 +67,9 @@ jogador* copyNode(jogador* original) {
     // Faz um novo alocamento para as respostas
     for (int i = 0; i < 5; i++) {
         if (original->respostas[i] != NULL) {
-            novo->respostas[i] = (char*) malloc(strlen(original->respostas[i]) + 1);
             strcpy(novo->respostas[i], original->respostas[i]);
-        } else {
-            novo->respostas[i] = NULL;
-        }
+        } else
+            novo->respostas[i][0] = '\0';
     }
 
     novo->prox = NULL;
