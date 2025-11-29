@@ -146,9 +146,9 @@ void liberarLista(jogador** no) {
 }
 
 // Imprime os jogadores na ordem que foram sorteados.
-void imprimirJogadores(jogador* no, int i){
+void imprimirJogadores(jogador* no, int a){
     if (no == NULL)
         return;
-    printf("%d. %s\n", i, no->nome);
-    imprimirJogadores(no->prox, i+1);
+    printf("  %d. %s\n", a, no->nome);
+    imprimirJogadores(no->prox, a+1);
 }
