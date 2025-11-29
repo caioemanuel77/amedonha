@@ -6,6 +6,8 @@ typedef struct node{
     struct node *prox;
 } jogador;
 
+void inicializar (jogador** l);
+
 void inserir(jogador** l, int id, char* nome);
 
 jogador* criarNode(int id, char* nome);
