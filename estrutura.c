@@ -7,6 +7,7 @@ void inicializar (jogador** l){
     *l = NULL;
 }
 
+// Cria um novo jogador e insere no início da lista
 void inserir(jogador** l, int id, char* nome){
     jogador* primeiro = *l;
     jogador* novo = criarNode(id, nome);
@@ -14,6 +15,7 @@ void inserir(jogador** l, int id, char* nome){
     novo->prox = primeiro;
 }
 
+// Cria um novo jogador com os dados fornecidos
 jogador* criarNode(int id, char* nome){
     jogador* novo = (jogador*) malloc(sizeof(jogador));
 
@@ -31,9 +33,10 @@ jogador* criarNode(int id, char* nome){
     return novo;
 }
 
+// Procura um jogador na lista pelo ID, retornando o ponteiro para o jogador encontrado
 jogador* find(jogador* lista, int id){
     jogador* atual = lista;
-
+    // Percorre a lista até encontrar o jogador com o ID correspondente
     while (atual != NULL && atual->id != id){
         atual = atual->prox;
     }
@@ -41,6 +44,7 @@ jogador* find(jogador* lista, int id){
     return atual;
 }
 
+// Cria uma cópia de um jogador, alocando nova memória
 jogador* copyNode(jogador* original) {
     if (original == NULL) {
         return NULL;
@@ -52,6 +56,7 @@ jogador* copyNode(jogador* original) {
     novo->id = original->id;
     novo->pontos = original->pontos;
 
+    // Faz um novo alocamento para o nome
     if (original->nome != NULL) {
         novo->nome = (char*) malloc(strlen(original->nome) + 1);
         strcpy(novo->nome, original->nome);
@@ -59,6 +64,7 @@ jogador* copyNode(jogador* original) {
         novo->nome = NULL;
     }
 
+    // Faz um novo alocamento para as respostas
     for (int i = 0; i < 5; i++) {
         if (original->respostas[i] != NULL) {
             novo->respostas[i] = (char*) malloc(strlen(original->respostas[i]) + 1);
@@ -73,26 +79,39 @@ jogador* copyNode(jogador* original) {
     return novo;
 }
 
-jogador* sorteioJogador(jogador*lista, int tamanho){
-    int vetor[tamanho], i;
+// Realiza um sorteio dos jogadores, retornando uma nova lista com a ordem sorteada
+jogador* sorteioJogador(jogador* lista, int tamanho){
+    int indices[tamanho];
+    int i, j, temp;
+    
     jogador* sorteados;
     jogador* adicionar;
-    jogador *anterior = NULL;
+    jogador* anterior = NULL;
+    
     inicializar(&sorteados);
 
-    for(i = 0; i < tamanho; i++)
-        vetor[i] = 1;
-    
+    // Preenche o vetor com os IDS sequenciais (0, 1, 2, 3, ...)
+    for(i = 0; i < tamanho; i++) {
+        indices[i] = i;
+    }
+
+    // Embaralha o vetor de índices, para cada posição, troca com uma aleatória anterior
+    for (i = tamanho - 1; i > 0; i--) {
+        j = rand() % (i + 1); // Escolhe um índice aleatório entre 0 e i
+        
+        temp = indices[i];
+        indices[i] = indices[j];
+        indices[j] = temp;
+    }
+
+    // Agora percorre o vetor embaralhado, pegando o ID que está na posição i do vetor embaralhado
     for(i = 0; i < tamanho; i++){
-        int valor = rand() % tamanho;
-        while(vetor[valor] != 1){
-            valor = rand() % tamanho;
-        }
-        vetor[valor] = 0;
+        int valorSorteado = indices[i];
 
-        adicionar = copyNode(find(lista, valor));
+        // Procura o nó do jogador pelo ID e faz uma cópia desse nó para não alterar a lista principal.
+        adicionar = copyNode(find(lista, valorSorteado));
 
-        if(anterior == NULL)
+        if(anterior == NULL) // Caso seja o primeiro jogador sorteado
             sorteados = adicionar;
         else
             anterior->prox = adicionar;
@@ -126,9 +145,10 @@ void liberarLista(jogador** no) {
     *no = NULL; 
 }
 
+// Imprime os jogadores na ordem que foram sorteados.
 void imprimirJogadores(jogador* no, int i){
     if (no == NULL)
         return;
-    printf("%i. %s", no->nome);
+    printf("%d. %s\n", i, no->nome);
     imprimirJogadores(no->prox, i+1);
 }
