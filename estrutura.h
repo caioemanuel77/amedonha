@@ -1,15 +1,18 @@
 typedef struct node{
     int id;
     char* nome;
+    char * respostas[5];
     int pontos;
     struct node *prox;
-}jogador;
+} jogador;
 
 void inserir(jogador** l, int id, char* nome);
 
 jogador* criarNode(int id, char* nome);
 
-int sorteio_letra ();
+int sorteioLetra ();
+
+int sorteioTemas ();
 
 jogador sorteio_jogador(jogador**lista);
 
