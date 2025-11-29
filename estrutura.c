@@ -31,3 +31,31 @@ jogador* criarNode(int id, char* nome){
 
     return novo;
 }
+
+jogador sorteio_jogador(jogador**lista){
+
+}
+
+int sorteio_letra(){
+
+}
+
+char* sorteio_temas(char* vetor[]){
+    
+    
+    
+}
+
+void liberarLista(jogador** no) {
+    jogador* atual = *no;
+    jogador* proximo;
+    
+    while (atual != NULL) {
+        proximo = atual->prox;
+        free(atual->nome);
+        free(atual); 
+        atual = proximo;
+    }
+    
+    *no = NULL; 
+}
