@@ -45,6 +45,7 @@ int main (int narg, char * argv[]) {
             while ( strcmp(letras[indice1],"K") == 0 ) 
                 indice1 = sorteioLetra();   // Realiza novo sorteio de letra
             printf("-> A letra desta rodada é %s\n",letras[indice1]);
+            char* letra = letras[indice1];
             letras[indice1] = "K";   // Anula a possibilidade da letra escolhida sair de novo.
 
         // Sorteio do tema
@@ -56,6 +57,7 @@ int main (int narg, char * argv[]) {
             while ( strcmp(temas[indice2],"X") == 0 ) 
                 indice2 = sorteioTemas();  // Realiza novo sorteio de tema
             printf("-> A categoria desta rodada é %s\n",temas[indice2]);
+            char* tema = temas[indice2];
             temas[indice2] = "X";   // Anula a possibilidade do tema escolhido sair de novo.
 
         //  Sorteio dos jogadores
@@ -70,11 +72,30 @@ int main (int narg, char * argv[]) {
         // Iniciando o jogo
 
             printf("\nTecle [Enter] para iniciar a rodada: ");
-            
-            // 2. Garante que a mensagem apareça imediatamente (resolve o bug do buffer)
             fflush(stdout);
 
             int c;
-            while ((c = getchar()) != '\n' && c != EOF);
+            if ((c = getchar()) != '\n') {
+                while ((c = getchar()) != '\n' && c != EOF);
+            }
+
+            getchar();
+
+            jogador* atual = ordem;
+
+            while(atual != NULL){
+                system("clear");
+                printf("*** JOGO AMEDONHA ***\n\n");
+                printf("-> A letra desta rodada é %s\n", letra);
+                printf("-> A categoria desta rodada é %s\n", tema);
+                printf("_________________________________________\n");
+                char resposta[30];
+                printf("\nJogador %s, qual a sua resposta? ",atual->nome);
+                scanf(" %[^\n]",resposta);
+
+                strcpy(atual->respostas[i],resposta); // Armazena a resposta na estrutura do jogador
+
+                atual = atual->prox;
+            }
     }
 }
