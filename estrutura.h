@@ -25,3 +25,5 @@ jogador* sorteioJogador(jogador*lista, int tamanho);
 void imprimirJogadores(jogador* no, int i);
 
 void liberarLista(jogador** no);
+
+int* respostasIguais(jogador* jogadores, int tamanho, int rodada);
