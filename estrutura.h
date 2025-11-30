@@ -27,3 +27,7 @@ void imprimirJogadores(jogador* no, int i);
 void liberarLista(jogador** no);
 
 int* respostasIguais(jogador* jogadores, int tamanho, int rodada);
+
+void imprimirPontuacao(jogador* lista, char** tema, int rodadasJogadas);
+
+void imprimirRespostasRodada(jogador* lista, int rodada);

@@ -156,6 +156,66 @@ void imprimirJogadores(jogador* no, int a){
     imprimirJogadores(no->prox, a+1);
 }
 
+void imprimirRespostasRodada(jogador* lista, int rodada) {
+
+    printf("\n===== RESPOSTAS DA RODADA %d =====\n\n", rodada + 1);
+
+    jogador* atual = lista;
+
+    while (atual != NULL) {
+        printf("%-12s → %s\n", atual->nome, atual->respostas[rodada]);
+        atual = atual->prox;
+    }
+
+    printf("\n");
+}
+
+void imprimirPontuacao(jogador* lista, char** tema, int rodadasJogadas) {
+
+    int rodada_exibida = rodadasJogadas + 1;
+
+    if (rodada_exibida < 5)
+        printf("\n===== PONTUAÇÃO PARCIAL APÓS %d RODADAS =====\n\n", rodada_exibida);
+    else
+        printf("\n===== PONTUAÇÃO FINAL =====\n\n");
+
+    // Cabeçalho
+    printf("%-15s", "Jogador");
+    for (int i = 0; i <= rodadasJogadas; i++)
+        printf("%-20s", tema[i]);
+    printf("%-10s\n", "Total");
+
+    jogador* atual = lista;
+
+    // Linhas dos jogadores
+    while (atual != NULL) {
+
+        printf("%-15s", atual->nome);
+
+        int soma = 0;
+
+        for (int i = 0; i <= rodadasJogadas; i++) {
+            printf("%-20d", atual->pontos[i]);
+            soma += atual->pontos[i];
+        }
+
+        printf("%-10d\n", soma);
+
+        atual = atual->prox;
+    }
+
+    printf("\n");
+}
+
+
+
+void imprimirJogadadas(jogador* no, int a){
+    if (no == NULL)
+        return;
+    printf("  %d. %s\n", a, no->nome);
+    imprimirJogadores(no->prox, a+1);
+}
+
 // Verifica respostas iguais entre os jogadores e retorna um vetor com os indices representando a quantidade de respostas iguais para cada jogador na rodada.
 int* respostasIguais(jogador* jogadores, int tamanho, int rodada) {
 
