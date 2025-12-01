@@ -156,26 +156,81 @@ void imprimirJogadores(jogador* no, int a){
     imprimirJogadores(no->prox, a+1);
 }
 
+void imprimirRespostasRodada(jogador* lista, int rodada) {
+
+    printf("===== RESPOSTAS DA RODADA %d =====\n\n", rodada + 1);
+
+    jogador* atual = lista;
+
+    while (atual != NULL) {
+        printf("%-12s → %s\n", atual->nome, atual->respostas[rodada]);
+        atual = atual->prox;
+    }
+
+    printf("\n");
+}
+
+void imprimirPontuacao(jogador* lista, char** tema, int rodadasJogadas) {
+
+    int rodada_exibida = rodadasJogadas + 1;
+
+    if (rodada_exibida < 5)
+        printf("===== PONTUAÇÃO PARCIAL APÓS %d RODADAS =====\n\n", rodada_exibida);
+    else
+        printf("============================================= PONTUAÇÃO FINAL =============================================\n\n");
+
+    // Cabeçalho
+    printf("%-15s", "Jogador");
+    for (int i = 0; i <= rodadasJogadas; i++)
+        printf("%-20s", tema[i]);
+    printf("%-10s\n", "Total");
+
+    jogador* atual = lista;
+
+    // Linhas dos jogadores
+    while (atual != NULL) {
+
+        printf("%-15s", atual->nome);
+
+        int soma = 0;
+
+        for (int i = 0; i <= rodadasJogadas; i++) {
+            printf("%-20d", atual->pontos[i]);
+            soma += atual->pontos[i];
+        }
+
+        printf("%-10d\n", soma);
+
+        atual = atual->prox;
+    }
+
+    printf("\n");
+}
+
 // Verifica respostas iguais entre os jogadores e retorna um vetor com os indices representando a quantidade de respostas iguais para cada jogador na rodada.
 int* respostasIguais(jogador* jogadores, int tamanho, int rodada) {
 
     int *respostas = calloc(tamanho, sizeof(int));
     jogador *p1, *p2;
 
-    // Para cada jogador
-    for (p1 = jogadores; p1 != NULL; p1 = p1->prox) {
+    int idx1;
+    for (idx1 = 0, p1 = jogadores; p1 != NULL; p1 = p1->prox, idx1++) {
 
-        // Se a resposta dele não é "erro"
         if (strcmp(p1->respostas[rodada], "erro") != 0) {
 
-            // Compara com os outros jogadores
-            for (p2 = jogadores; p2 != NULL; p2 = p2->prox) {
+            int idx2;
+            for (idx2 = 0, p2 = jogadores; p2 != NULL; p2 = p2->prox, idx2++) {
 
                 if (strcmp(p1->respostas[rodada], p2->respostas[rodada]) == 0)
-                    respostas[p1->id]++;   // Id é a posição do jogador
+                    respostas[idx1]++;
             }
         }
     }
 
-    return respostas; 
+    return respostas;
+}
+
+void limparBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
