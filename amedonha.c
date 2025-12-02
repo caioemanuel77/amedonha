@@ -4,6 +4,7 @@
 #include <sys/time.h>
 #include "estrutura.h"
 #include <ctype.h>
+#include <math.h>
 
 int main (int narg, char * argv[]) {
     int N;
@@ -13,8 +14,7 @@ int main (int narg, char * argv[]) {
     double tempo_seg = 1.0;
     char* letra[5];
     char* tema[5];
-
-    printf("========= JOGO AMEDONHA =========\n\n");
+printf("============= JOGO AMEDONHA =============\n\n");
     printf("Quantos jogadores? ");
     scanf("%d",&N);
 
@@ -26,6 +26,7 @@ int main (int narg, char * argv[]) {
             printf("Qual o nome do jogador %d? (NO MÁXIMO 12 LETRAS) ",i+1);
             scanf("%s",nome);
         }
+        nome[0] = toupper(nome[0]);
         inserir(&lista_jogadores,i,nome);
     }
 
@@ -40,7 +41,7 @@ int main (int narg, char * argv[]) {
 
         system("clear");
         
-        printf("========= JOGO AMEDONHA =========\n\n");
+        printf("============= JOGO AMEDONHA =============\n\n");
 
         // Sorteio da letra
 
@@ -92,7 +93,7 @@ int main (int narg, char * argv[]) {
             while (atual != NULL && cont < N) {
 
                 system("clear");
-                printf("========= JOGO AMEDONHA =========\n\n");
+                printf("============= JOGO AMEDONHA =============\n\n");
                 printf("-> A letra desta rodada é %s\n", letra[i]);
                 printf("-> A categoria desta rodada é %s\n", tema[i]);
                 printf("_________________________________________\n");
@@ -107,7 +108,7 @@ int main (int narg, char * argv[]) {
                     scanf(" %[^\n]",resposta);
                     
                     //  Tratamento de respostas: resposta maior que 30 caracteres ou letra inicial diferente da sorteada
-                    while (strlen(resposta) > 29 || toupper(resposta[0]) != toupper(letra[i][0])) {
+                    while (strlen(resposta) > 29 || toupper(resposta[0]) != letra[i][0]) {
                         printf("Resposta inválida! Tente novamente\n");
                         printf("\nJogador %s, qual a sua resposta? ",atual->nome);
                         scanf(" %[^\n]",resposta);
@@ -120,6 +121,8 @@ int main (int narg, char * argv[]) {
                 tempo_seg = (double) (fim.tv_usec - inicio.tv_usec) / 1000000 + (double) (fim.tv_sec - inicio.tv_sec);
 
                 jogador* jogadorOriginal = find(lista_jogadores, atual->id);
+                
+                jogadorOriginal->tempo[i] = tempo_seg;
 
                 if (tempo_seg <= tempo_jogador) {
                     if ( strcmp(tema[i],"Nomes de Pessoas") == 0 ) { // Tratamento do caso "Nome de Pessoa" e nome simples
@@ -131,12 +134,15 @@ int main (int narg, char * argv[]) {
                             j++;
                         }
                         resp[j] = '\0';
+                        resp[0] = toupper(resp[0]);
                         strcpy(jogadorOriginal->respostas[i], resp);
                     } 
-                    else
+                    else {
+                        resposta[0] = toupper(resposta[0]);
                         strcpy(jogadorOriginal->respostas[i], resposta);
+                    }
                 } else
-                    strcpy(jogadorOriginal->respostas[i], "erro");
+                    strcpy(jogadorOriginal->respostas[i], "Resposta Fora do Tempo"); // Caso o tempo tenha estourado, a resposta será "erro"
 
                 atual = atual->prox; 
                 cont++;
@@ -148,17 +154,19 @@ int main (int narg, char * argv[]) {
             for (atual = lista_jogadores; atual != NULL; atual = atual->prox) {
 
 
-                if (strcmp(atual->respostas[i], "erro") == 0) {
+                if (strcmp(atual->respostas[i], "Resposta Fora do Tempo") == 0) {
                     atual->pontos[i] = 0;
                 } else {
-                    atual->pontos[i] = (int) strlen(atual->respostas[i]) / repete[idx];
+                    atual->pontos[i] = ceil((double) strlen(atual->respostas[i]) / repete[idx]);
                 }
                 idx++;
             }
+            free(repete);
+            liberarLista(&ordem); // Libera a lista de ordem de jogadores sorteados
             system("clear");
-            printf("========= JOGO AMEDONHA =========\n\n");
 
             if(i < 4){
+                printf("================= JOGO AMEDONHA ==================\n\n");
                 // Exibe as respostas desta rodada
                 imprimirRespostasRodada(lista_jogadores, i);
 
@@ -170,13 +178,17 @@ int main (int narg, char * argv[]) {
                 fflush(stdout);
                 getchar();
             }else{
-
+                printf("==================== JOGO AMEDONHA ====================\n\n");
                 printf("FIM DE JOGO! Tecle [Enter] para ver o resultado final: ");
                 fflush(stdout);
                 getchar();
                 system("clear");
-                printf("============================================= JOGO AMEDONHA =============================================\n\n");
+                printf("================================================================ JOGO AMEDONHA ==================================================================\n\n");
+                printf("%*sO VENCEDOR É: %s\n\n", 62, "", vencedor(lista_jogadores, N));
                 imprimirPontuacao(lista_jogadores, tema, i);
+                
             }
     }
+
+    liberarLista(&lista_jogadores);
 }
