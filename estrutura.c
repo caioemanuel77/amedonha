@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "estrutura.h"
+#include <time.h>
 
 void inicializar (jogador** l){
     *l = NULL;
@@ -100,6 +101,7 @@ jogador* sorteioJogador(jogador* lista, int tamanho){
 
     // Embaralha o vetor de índices, para cada posição, troca com uma aleatória anterior
     for (i = tamanho - 1; i > 0; i--) {
+        srand(time(NULL));
         j = rand() % (i + 1); // Escolhe um índice aleatório entre 0 e i
         
         temp = indices[i];
@@ -125,11 +127,13 @@ jogador* sorteioJogador(jogador* lista, int tamanho){
 }
 
 int sorteioLetra(){
+    srand(time(NULL));
     int valor = rand() % 23;
     return valor;
 }
 
 int sorteioTemas(){
+    srand(time(NULL));
     int valor = rand() % 5;
     return valor;
 }
@@ -138,7 +142,7 @@ void liberarLista(jogador** no) {
     jogador* atual = *no;
     jogador* proximo;
     
-    while (atual != NULL) {
+    while (atual != NULL) {        
         proximo = atual->prox;
         free(atual->nome);
         free(atual); 
@@ -158,7 +162,7 @@ void imprimirJogadores(jogador* no, int a){
 
 void imprimirRespostasRodada(jogador* lista, int rodada) {
 
-    printf("===== RESPOSTAS DA RODADA %d =====\n\n", rodada + 1);
+    printf("============= RESPOSTAS DA RODADA %d ==============\n\n", rodada + 1);
 
     jogador* atual = lista;
 
@@ -175,15 +179,16 @@ void imprimirPontuacao(jogador* lista, char** tema, int rodadasJogadas) {
     int rodada_exibida = rodadasJogadas + 1;
 
     if (rodada_exibida < 5)
-        printf("===== PONTUAÇÃO PARCIAL APÓS %d RODADAS =====\n\n", rodada_exibida);
+        printf("======== PONTUAÇÃO PARCIAL APÓS %d RODADAS ========\n\n", rodada_exibida);
     else
-        printf("============================================= PONTUAÇÃO FINAL =============================================\n\n");
+        printf("================================================================ PONTUAÇÃO FINAL ================================================================\n\n");
 
     // Cabeçalho
     printf("%-15s", "Jogador");
     for (int i = 0; i <= rodadasJogadas; i++)
         printf("%-20s", tema[i]);
-    printf("%-10s\n", "Total");
+    printf("%-15s", "Total");
+    printf("%-15s\n", "Tempo Total (s)");
 
     jogador* atual = lista;
 
@@ -193,13 +198,16 @@ void imprimirPontuacao(jogador* lista, char** tema, int rodadasJogadas) {
         printf("%-15s", atual->nome);
 
         int soma = 0;
+        double soma_tempo = 0.0;
 
         for (int i = 0; i <= rodadasJogadas; i++) {
             printf("%-20d", atual->pontos[i]);
             soma += atual->pontos[i];
+            soma_tempo += atual->tempo[i];
         }
 
-        printf("%-10d\n", soma);
+        printf("%-15d", soma);
+        printf("%-15.2f\n", soma_tempo);
 
         atual = atual->prox;
     }
@@ -228,6 +236,47 @@ int* respostasIguais(jogador* jogadores, int tamanho, int rodada) {
     }
 
     return respostas;
+}
+
+// Determina o vencedor com base na maior pontuação total e menor tempo em caso de empate
+char* vencedor(jogador* lista, int tamanho) {
+    jogador* atual = lista;
+    jogador* campeao = NULL;
+    int maiorPontuacao = -1;
+
+    // Percorre a lista para encontrar o jogador com a maior pontuação total
+    while (atual != NULL) {
+        int pontuacaoTotal = 0;
+        for (int i = 0; i < 5; i++) {
+            pontuacaoTotal += atual->pontos[i];
+        }
+
+        if (pontuacaoTotal > maiorPontuacao) {
+            maiorPontuacao = pontuacaoTotal;
+            campeao = atual;
+        }else if (pontuacaoTotal == maiorPontuacao) {
+            // Empate: escolher o jogador com menor tempo total
+            double tempoTotalCampeao = 0.0;
+            double tempoTotalAtual = 0.0;
+
+            for (int i = 0; i < 5; i++) {
+                tempoTotalCampeao += campeao->tempo[i];
+                tempoTotalAtual += atual->tempo[i];
+            }
+
+            if (tempoTotalAtual < tempoTotalCampeao) {
+                campeao = atual;
+            }
+        }
+
+        atual = atual->prox;
+    }
+
+    if (campeao != NULL) {
+        return campeao->nome;
+    } else {
+        return NULL;
+    }
 }
 
 void limparBuffer() {

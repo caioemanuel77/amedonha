@@ -3,6 +3,7 @@ typedef struct node{
     char* nome;
     char respostas[5][30];
     int pontos[5];
+    double tempo[5];
     struct node *prox;
 } jogador;
 
@@ -31,5 +32,7 @@ int* respostasIguais(jogador* jogadores, int tamanho, int rodada);
 void imprimirPontuacao(jogador* lista, char** tema, int rodadasJogadas);
 
 void imprimirRespostasRodada(jogador* lista, int rodada);
+
+char* vencedor(jogador* lista, int tamanho);
 
 void limparBuffer();
