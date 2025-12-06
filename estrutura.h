@@ -1,6 +1,6 @@
 typedef struct node{
     int id;
-    char* nome;
+    char* nome; 
     char respostas[5][30];
     int pontos[5];
     double tempo[5];
