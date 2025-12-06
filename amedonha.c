@@ -10,13 +10,18 @@ int main (int narg, char * argv[]) {
     int N;
     jogador * lista_jogadores;
     inicializar (&lista_jogadores);
-    struct timeval inicio,fim;
+    struct timeval inicio, fim;
     double tempo_seg = 1.0;
     char* letra[5];
     char* tema[5];
-printf("============= JOGO AMEDONHA =============\n\n");
+
+    printf("============= JOGO AMEDONHA =============\n\n");
     printf("Quantos jogadores? ");
     scanf("%d",&N);
+    while(N > 10 || N < 2){  // Tratamento de erro: número de jogadores inválido
+        printf("Quantos jogadores? (Mínimo 2, máximo 10): ");
+        scanf("%d",&N);
+    }
 
     for (int i=0; i<N; i++) { // Alocação dos jogadores na lista de jogadores
         char nome[13];

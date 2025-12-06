@@ -94,7 +94,7 @@ jogador* sorteioJogador(jogador* lista, int tamanho){
     
     inicializar(&sorteados);
 
-    // Preenche o vetor com os IDS sequenciais (0, 1, 2, 3, ...)
+    // Preenche o vetor com os IDS sequenciais (0, 1, 2, 3, 4)
     for(i = 0; i < tamanho; i++) {
         indices[i] = i;
     }
@@ -224,7 +224,7 @@ int* respostasIguais(jogador* jogadores, int tamanho, int rodada) {
     int idx1;
     for (idx1 = 0, p1 = jogadores; p1 != NULL; p1 = p1->prox, idx1++) {
 
-        if (strcmp(p1->respostas[rodada], "erro") != 0) {
+        if (strcmp(p1->respostas[rodada], "Resposta Fora do Tempo") != 0) {
 
             int idx2;
             for (idx2 = 0, p2 = jogadores; p2 != NULL; p2 = p2->prox, idx2++) {
